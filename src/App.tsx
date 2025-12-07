@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { BlogProvider } from "@/context/BlogContext";
 import Preloader from "@/components/Preloader";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -41,6 +42,7 @@ const App = () => (
       <TooltipProvider>
         <AuthProvider>
           <CartProvider>
+            <BlogProvider>
             <Toaster />
             <Sonner />
             <Preloader />
@@ -84,6 +86,7 @@ const App = () => (
                 } />
               </Routes>
             </BrowserRouter>
+            </BlogProvider>
           </CartProvider>
         </AuthProvider>
       </TooltipProvider>
