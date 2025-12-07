@@ -23,9 +23,19 @@ const CheckoutPage = () => {
   const { cartItems, getCartTotal, clearCart } = useCart();
   const { isAuthenticated, setShowAuthModal, setAuthMode } = useAuth();
   const [currentStep, setCurrentStep] = useState<Step>("address");
-  const [selectedAddress, setSelectedAddress] = useState<string | null>("1");
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [selectedDelivery, setSelectedDelivery] = useState("standard");
   const [selectedPayment, setSelectedPayment] = useState("cod");
+  const [isGuestCheckout, setIsGuestCheckout] = useState(false);
+  const [guestAddress, setGuestAddress] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    pincode: ""
+  });
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [newAddress, setNewAddress] = useState({
     name: "",
@@ -95,14 +105,15 @@ const CheckoutPage = () => {
     setNewAddress({ name: "", phone: "", address: "", city: "", state: "", pincode: "" });
   };
 
-  if (!isAuthenticated) {
+  // Show login/guest checkout option only if not authenticated and not already in guest mode
+  if (!isAuthenticated && !isGuestCheckout) {
     return (
       <main className="min-h-screen py-16 bg-background">
         <div className="container-cbr">
           <div className="max-w-md mx-auto text-center bg-card rounded-2xl p-8 shadow-cbr-md">
-            <h2 className="font-display text-2xl font-bold text-foreground">Login Required</h2>
+            <h2 className="font-display text-2xl font-bold text-foreground">Checkout Options</h2>
             <p className="mt-4 text-muted-foreground">
-              Please login or create an account to proceed with checkout.
+              Login to your account or continue as a guest.
             </p>
             <div className="mt-6 space-y-3">
               <button
@@ -117,7 +128,24 @@ const CheckoutPage = () => {
               >
                 Create Account
               </button>
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-card text-muted-foreground">or</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsGuestCheckout(true)}
+                className="w-full py-3 px-6 rounded-lg border-2 border-accent text-accent font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                Continue as Guest
+              </button>
             </div>
+            <p className="text-xs text-muted-foreground mt-4">
+              Guest checkout allows you to purchase without creating an account.
+            </p>
           </div>
         </div>
       </main>
@@ -178,123 +206,196 @@ const CheckoutPage = () => {
             {currentStep === "address" && (
               <div className="bg-card rounded-2xl p-6 shadow-cbr-sm">
                 <h2 className="font-display text-xl font-bold text-foreground mb-6">
-                  Select Delivery Address
+                  {isGuestCheckout ? "Enter Delivery Address" : "Select Delivery Address"}
                 </h2>
-                <div className="space-y-4">
-                  {savedAddresses.map((addr) => (
-                    <label
-                      key={addr.id}
-                      className={`block p-4 rounded-xl border-2 cursor-pointer transition-colors ${
-                        selectedAddress === addr.id
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-primary/50"
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <input
-                          type="radio"
-                          name="address"
-                          checked={selectedAddress === addr.id}
-                          onChange={() => setSelectedAddress(addr.id)}
-                          className="mt-1"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium text-foreground">{addr.name}</p>
-                            {addr.isDefault && (
-                              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
-                                Default
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground mt-1">{addr.phone}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {addr.address}, {addr.city}, {addr.state} - {addr.pincode}
-                          </p>
-                        </div>
-                      </div>
-                    </label>
-                  ))}
-
-                  {!showAddAddress ? (
-                    <button
-                      onClick={() => setShowAddAddress(true)}
-                      className="w-full p-4 border-2 border-dashed border-border rounded-xl text-primary hover:bg-secondary transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Plus className="h-5 w-5" />
-                      Add New Address
-                    </button>
-                  ) : (
-                    <form onSubmit={handleAddAddress} className="p-4 border border-border rounded-xl space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <input
-                          type="text"
-                          placeholder="Full Name"
-                          value={newAddress.name}
-                          onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
-                          className="input-cbr"
-                          required
-                        />
-                        <input
-                          type="tel"
-                          placeholder="Phone Number"
-                          value={newAddress.phone}
-                          onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
-                          className="input-cbr"
-                          required
-                        />
-                      </div>
+                
+                {/* Guest Checkout Address Form */}
+                {isGuestCheckout ? (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
                       <input
                         type="text"
-                        placeholder="Address"
-                        value={newAddress.address}
-                        onChange={(e) => setNewAddress({ ...newAddress, address: e.target.value })}
+                        placeholder="Full Name *"
+                        value={guestAddress.name}
+                        onChange={(e) => setGuestAddress({ ...guestAddress, name: e.target.value })}
                         className="input-cbr"
                         required
                       />
-                      <div className="grid grid-cols-3 gap-4">
-                        <input
-                          type="text"
-                          placeholder="City"
-                          value={newAddress.city}
-                          onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
-                          className="input-cbr"
-                          required
-                        />
-                        <input
-                          type="text"
-                          placeholder="State"
-                          value={newAddress.state}
-                          onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
-                          className="input-cbr"
-                          required
-                        />
-                        <input
-                          type="text"
-                          placeholder="Pincode"
-                          value={newAddress.pincode}
-                          onChange={(e) => setNewAddress({ ...newAddress, pincode: e.target.value })}
-                          className="input-cbr"
-                          required
-                        />
-                      </div>
-                      <div className="flex gap-2">
-                        <button type="submit" className="btn-primary">Save Address</button>
-                        <button type="button" onClick={() => setShowAddAddress(false)} className="btn-outline">Cancel</button>
-                      </div>
-                    </form>
-                  )}
-                </div>
+                      <input
+                        type="email"
+                        placeholder="Email Address *"
+                        value={guestAddress.email}
+                        onChange={(e) => setGuestAddress({ ...guestAddress, email: e.target.value })}
+                        className="input-cbr"
+                        required
+                      />
+                    </div>
+                    <input
+                      type="tel"
+                      placeholder="Phone Number *"
+                      value={guestAddress.phone}
+                      onChange={(e) => setGuestAddress({ ...guestAddress, phone: e.target.value })}
+                      className="input-cbr"
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="Street Address *"
+                      value={guestAddress.address}
+                      onChange={(e) => setGuestAddress({ ...guestAddress, address: e.target.value })}
+                      className="input-cbr"
+                      required
+                    />
+                    <div className="grid grid-cols-3 gap-4">
+                      <input
+                        type="text"
+                        placeholder="City *"
+                        value={guestAddress.city}
+                        onChange={(e) => setGuestAddress({ ...guestAddress, city: e.target.value })}
+                        className="input-cbr"
+                        required
+                      />
+                      <input
+                        type="text"
+                        placeholder="State *"
+                        value={guestAddress.state}
+                        onChange={(e) => setGuestAddress({ ...guestAddress, state: e.target.value })}
+                        className="input-cbr"
+                        required
+                      />
+                      <input
+                        type="text"
+                        placeholder="Pincode *"
+                        value={guestAddress.pincode}
+                        onChange={(e) => setGuestAddress({ ...guestAddress, pincode: e.target.value })}
+                        className="input-cbr"
+                        required
+                      />
+                    </div>
+                    <button
+                      onClick={() => setCurrentStep("delivery")}
+                      disabled={!guestAddress.name || !guestAddress.email || !guestAddress.phone || !guestAddress.address || !guestAddress.city || !guestAddress.state || !guestAddress.pincode}
+                      className="btn-primary mt-6 w-full disabled:opacity-50"
+                    >
+                      Continue to Delivery
+                    </button>
+                  </div>
+                ) : (
+                  /* Logged in user addresses */
+                  <div className="space-y-4">
+                    {savedAddresses.map((addr) => (
+                      <label
+                        key={addr.id}
+                        className={`block p-4 rounded-xl border-2 cursor-pointer transition-colors ${
+                          selectedAddress === addr.id
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/50"
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <input
+                            type="radio"
+                            name="address"
+                            checked={selectedAddress === addr.id}
+                            onChange={() => setSelectedAddress(addr.id)}
+                            className="mt-1"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium text-foreground">{addr.name}</p>
+                              {addr.isDefault && (
+                                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
+                                  Default
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1">{addr.phone}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {addr.address}, {addr.city}, {addr.state} - {addr.pincode}
+                            </p>
+                          </div>
+                        </div>
+                      </label>
+                    ))}
 
-                <button
-                  onClick={() => setCurrentStep("delivery")}
-                  disabled={!selectedAddress}
-                  className="btn-primary mt-6 w-full"
-                >
-                  Continue to Delivery
-                </button>
-              </div>
-            )}
+                    {!showAddAddress ? (
+                      <button
+                        onClick={() => setShowAddAddress(true)}
+                        className="w-full p-4 border-2 border-dashed border-border rounded-xl text-primary hover:bg-secondary transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Plus className="h-5 w-5" />
+                        Add New Address
+                      </button>
+                    ) : (
+                      <form onSubmit={handleAddAddress} className="p-4 border border-border rounded-xl space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <input
+                            type="text"
+                            placeholder="Full Name"
+                            value={newAddress.name}
+                            onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
+                            className="input-cbr"
+                            required
+                          />
+                          <input
+                            type="tel"
+                            placeholder="Phone Number"
+                            value={newAddress.phone}
+                            onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
+                            className="input-cbr"
+                            required
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Address"
+                          value={newAddress.address}
+                          onChange={(e) => setNewAddress({ ...newAddress, address: e.target.value })}
+                          className="input-cbr"
+                          required
+                        />
+                        <div className="grid grid-cols-3 gap-4">
+                          <input
+                            type="text"
+                            placeholder="City"
+                            value={newAddress.city}
+                            onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
+                            className="input-cbr"
+                            required
+                          />
+                          <input
+                            type="text"
+                            placeholder="State"
+                            value={newAddress.state}
+                            onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
+                            className="input-cbr"
+                            required
+                          />
+                          <input
+                            type="text"
+                            placeholder="Pincode"
+                            value={newAddress.pincode}
+                            onChange={(e) => setNewAddress({ ...newAddress, pincode: e.target.value })}
+                            className="input-cbr"
+                            required
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <button type="submit" className="btn-primary">Save Address</button>
+                          <button type="button" onClick={() => setShowAddAddress(false)} className="btn-outline">Cancel</button>
+                        </div>
+                      </form>
+                    )}
+
+                    <button
+                      onClick={() => setCurrentStep("delivery")}
+                      disabled={!selectedAddress}
+                      className="btn-primary mt-6 w-full"
+                    >
+                      Continue to Delivery
+                    </button>
+                  </div>
+                )}
 
             {/* Delivery Step */}
             {currentStep === "delivery" && (

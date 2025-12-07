@@ -278,11 +278,11 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile menu - Full overlay with higher z-index */}
       {isMenuOpen && (
-        <div className="fixed inset-x-0 top-0 bottom-0 bg-card z-[60] md:hidden animate-fade-in overflow-y-auto pt-4">
+        <div className="fixed inset-0 bg-card z-[100] md:hidden animate-fade-in overflow-y-auto">
           {/* Close button */}
-          <div className="flex items-center justify-between px-4 pb-4 border-b border-border">
+          <div className="sticky top-0 bg-card flex items-center justify-between px-4 py-4 border-b border-border">
             <Link to="/" className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
               <img src={logo} alt="CBR Pharma" className="h-10 w-10 object-contain" />
               <span className="font-display font-bold text-lg text-primary">CBR Pharma</span>

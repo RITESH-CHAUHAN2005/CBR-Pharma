@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useCallback } from "react";
 
 export interface CartItem {
   id: string;
@@ -21,9 +21,23 @@ export interface WishlistItem {
   prescriptionRequired?: boolean;
 }
 
+export interface NotificationProduct {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
+}
+
+export interface Notification {
+  id: string;
+  type: "cart" | "wishlist";
+  product: NotificationProduct;
+}
+
 interface CartContextType {
   cartItems: CartItem[];
   wishlistItems: WishlistItem[];
+  notifications: Notification[];
   addToCart: (item: Omit<CartItem, "quantity">) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
@@ -34,6 +48,9 @@ interface CartContextType {
   getCartTotal: () => number;
   getCartCount: () => number;
   getWishlistCount: () => number;
+  triggerCartNotification: (product: NotificationProduct) => void;
+  triggerWishlistNotification: (product: NotificationProduct) => void;
+  removeNotification: (id: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -41,6 +58,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const addToCart = (item: Omit<CartItem, "quantity">) => {
     setCartItems((prev) => {
@@ -97,11 +115,44 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const getWishlistCount = () => wishlistItems.length;
 
+  const triggerCartNotification = useCallback((product: NotificationProduct) => {
+    const notification: Notification = {
+      id: `cart-${Date.now()}-${Math.random()}`,
+      type: "cart",
+      product,
+    };
+    setNotifications((prev) => [...prev, notification]);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+    }, 5000);
+  }, []);
+
+  const triggerWishlistNotification = useCallback((product: NotificationProduct) => {
+    const notification: Notification = {
+      id: `wishlist-${Date.now()}-${Math.random()}`,
+      type: "wishlist",
+      product,
+    };
+    setNotifications((prev) => [...prev, notification]);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+    }, 5000);
+  }, []);
+
+  const removeNotification = useCallback((id: string) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  }, []);
+
   return (
     <CartContext.Provider
       value={{
         cartItems,
         wishlistItems,
+        notifications,
         addToCart,
         removeFromCart,
         updateQuantity,
@@ -112,6 +163,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         getCartTotal,
         getCartCount,
         getWishlistCount,
+        triggerCartNotification,
+        triggerWishlistNotification,
+        removeNotification,
       }}
     >
       {children}

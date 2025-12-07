@@ -8,7 +8,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { addToCart, addToWishlist, wishlistItems } = useCart();
+  const { addToCart, addToWishlist, removeFromWishlist, wishlistItems, triggerCartNotification, triggerWishlistNotification } = useCart();
 
   const isInWishlist = wishlistItems.some((item) => item.id === product.id);
 
@@ -23,19 +23,37 @@ const ProductCard = ({ product }: ProductCardProps) => {
       image: product.image,
       prescriptionRequired: product.prescriptionRequired,
     });
-  };
-
-  const handleAddToWishlist = (e: React.MouseEvent) => {
-    e.preventDefault();
-    addToWishlist({
+    // Trigger notification every time
+    triggerCartNotification({
       id: product.id,
       name: product.name,
-      brand: product.brand,
-      price: product.price,
-      originalPrice: product.originalPrice,
       image: product.image,
-      prescriptionRequired: product.prescriptionRequired,
+      price: product.price,
     });
+  };
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isInWishlist) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        image: product.image,
+        prescriptionRequired: product.prescriptionRequired,
+      });
+      // Trigger notification when adding
+      triggerWishlistNotification({
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        price: product.price,
+      });
+    }
   };
 
   return (
@@ -60,12 +78,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
           )}
         </div>
 
-        {/* Wishlist button */}
+        {/* Wishlist button - Toggle on/off */}
         <button
-          onClick={handleAddToWishlist}
+          onClick={handleToggleWishlist}
           className={`absolute top-3 right-3 p-2 rounded-full transition-all ${
             isInWishlist 
-              ? "bg-destructive text-destructive-foreground" 
+              ? "bg-pink-500 text-white" 
               : "bg-card/80 backdrop-blur-sm hover:bg-card"
           }`}
         >
