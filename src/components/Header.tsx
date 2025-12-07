@@ -280,9 +280,23 @@ const Header = () => {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 top-[120px] bg-card z-40 md:hidden animate-fade-in overflow-y-auto">
-          <nav className="container-cbr py-6">
-            <ul className="space-y-2">
+        <div className="fixed inset-x-0 top-0 bottom-0 bg-card z-[60] md:hidden animate-fade-in overflow-y-auto pt-4">
+          {/* Close button */}
+          <div className="flex items-center justify-between px-4 pb-4 border-b border-border">
+            <Link to="/" className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
+              <img src={logo} alt="CBR Pharma" className="h-10 w-10 object-contain" />
+              <span className="font-display font-bold text-lg text-primary">CBR Pharma</span>
+            </Link>
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="p-2 rounded-xl hover:bg-secondary transition-colors"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+          
+          <nav className="px-4 py-6">
+            <ul className="space-y-1">
               {navLinks.filter(link => !link.hasMegaMenu).map((link) => (
                 <li key={link.name}>
                   <Link
@@ -326,6 +340,36 @@ const Header = () => {
                     )}
                   </div>
                 ))}
+              </li>
+
+              {/* Quick links */}
+              <li className="border-t border-border pt-4 mt-4">
+                <Link
+                  to="/wishlist"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 py-3 px-4 text-foreground hover:bg-secondary rounded-lg transition-colors"
+                >
+                  <Heart className="h-5 w-5" />
+                  <span className="font-medium">Wishlist</span>
+                  {getWishlistCount() > 0 && (
+                    <span className="ml-auto bg-pink-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                      {getWishlistCount()}
+                    </span>
+                  )}
+                </Link>
+                <Link
+                  to="/cart"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 py-3 px-4 text-foreground hover:bg-secondary rounded-lg transition-colors"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  <span className="font-medium">Cart</span>
+                  {getCartCount() > 0 && (
+                    <span className="ml-auto bg-accent text-accent-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                      {getCartCount()}
+                    </span>
+                  )}
+                </Link>
               </li>
 
               <li className="pt-4 border-t border-border">

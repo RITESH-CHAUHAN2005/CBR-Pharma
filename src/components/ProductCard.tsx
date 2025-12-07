@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/data/products";
-import { toast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   product: Product;
@@ -24,10 +23,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
       image: product.image,
       prescriptionRequired: product.prescriptionRequired,
     });
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
-    });
   };
 
   const handleAddToWishlist = (e: React.MouseEvent) => {
@@ -40,10 +35,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
       originalPrice: product.originalPrice,
       image: product.image,
       prescriptionRequired: product.prescriptionRequired,
-    });
-    toast({
-      title: "Added to wishlist",
-      description: `${product.name} has been saved to your wishlist.`,
     });
   };
 
