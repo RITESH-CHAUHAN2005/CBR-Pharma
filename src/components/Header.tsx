@@ -278,9 +278,9 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Mobile menu - Full overlay with higher z-index */}
+      {/* Mobile menu - Full overlay with highest z-index */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-card z-[100] md:hidden animate-fade-in overflow-y-auto">
+        <div className="fixed inset-0 bg-card z-[9999] md:hidden overflow-y-auto" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
           {/* Close button */}
           <div className="sticky top-0 bg-card flex items-center justify-between px-4 py-4 border-b border-border">
             <Link to="/" className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
