@@ -396,6 +396,8 @@ const CheckoutPage = () => {
                     </button>
                   </div>
                 )}
+              </div>
+            )}
 
             {/* Delivery Step */}
             {currentStep === "delivery" && (
