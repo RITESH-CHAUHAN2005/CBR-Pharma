@@ -280,112 +280,128 @@ const Header = () => {
 
       {/* Mobile menu - Full overlay with highest z-index */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-card z-[9999] md:hidden overflow-y-auto" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
-          {/* Close button */}
-          <div className="sticky top-0 bg-card flex items-center justify-between px-4 py-4 border-b border-border">
-            <Link to="/" className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
-              <img src={logo} alt="CBR Pharma" className="h-10 w-10 object-contain" />
-              <span className="font-display font-bold text-lg text-primary">CBR Pharma</span>
-            </Link>
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className="p-2 rounded-xl hover:bg-secondary transition-colors"
-            >
-              <X className="h-6 w-6" />
-            </button>
-          </div>
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] md:hidden"
+            onClick={() => setIsMenuOpen(false)}
+          />
           
-          <nav className="px-4 py-6">
-            <ul className="space-y-1">
-              {navLinks.filter(link => !link.hasMegaMenu).map((link) => (
-                <li key={link.name}>
+          {/* Menu Panel */}
+          <div 
+            className="fixed inset-y-0 right-0 w-full max-w-sm bg-card z-[9999] md:hidden overflow-y-auto shadow-2xl animate-slide-in-right"
+          >
+            {/* Header with close button */}
+            <div className="sticky top-0 bg-card/95 backdrop-blur-md flex items-center justify-between px-5 py-4 border-b border-border">
+              <Link to="/" className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
+                <img src={logo} alt="CBR Pharma" className="h-10 w-10 object-contain" />
+                <span className="font-display font-bold text-lg text-primary">CBR Pharma</span>
+              </Link>
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="p-2.5 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <nav className="px-4 py-6">
+              <ul className="space-y-1">
+                {navLinks.filter(link => !link.hasMegaMenu).map((link, index) => (
+                  <li key={link.name} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                    <Link
+                      to={link.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center gap-3 py-3.5 px-4 text-base font-medium text-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-all duration-200"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+                
+                {/* Categories with expandable submenu */}
+                <li className="border-t border-border pt-5 mt-5">
+                  <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Shop by Category</p>
+                  <div className="space-y-1">
+                    {megaMenuData.map((category, catIndex) => (
+                      <div key={category.name} className="animate-fade-in" style={{ animationDelay: `${(catIndex + 5) * 50}ms` }}>
+                        <button
+                          onClick={() => setExpandedMobileCategory(
+                            expandedMobileCategory === category.name ? null : category.name
+                          )}
+                          className="w-full flex items-center justify-between py-3.5 px-4 text-foreground hover:bg-primary/10 rounded-xl transition-all duration-200"
+                        >
+                          <span className="font-medium">{category.name}</span>
+                          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${expandedMobileCategory === category.name ? "rotate-180" : ""}`} />
+                        </button>
+                        
+                        {/* Submenu with smooth animation */}
+                        <div className={`overflow-hidden transition-all duration-300 ease-out ${expandedMobileCategory === category.name ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+                          <div className="ml-3 mt-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
+                            {category.subItems.map((subItem, subIndex) => (
+                              <Link
+                                key={subItem.name}
+                                to={`/category/${category.slug}/${subItem.slug}`}
+                                onClick={() => setIsMenuOpen(false)}
+                                className="block py-2.5 px-4 text-sm text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200 animate-fade-in"
+                                style={{ animationDelay: `${subIndex * 30}ms` }}
+                              >
+                                {subItem.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </li>
+
+                {/* Quick links */}
+                <li className="border-t border-border pt-5 mt-5">
+                  <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Quick Links</p>
                   <Link
-                    to={link.path}
+                    to="/wishlist"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block py-3 px-4 text-lg font-medium text-foreground hover:bg-secondary rounded-lg transition-colors"
+                    className="flex items-center gap-3 py-3.5 px-4 text-foreground hover:bg-pink-50 hover:text-pink-600 rounded-xl transition-all duration-200"
                   >
-                    {link.name}
+                    <Heart className="h-5 w-5" />
+                    <span className="font-medium">My Wishlist</span>
+                    {getWishlistCount() > 0 && (
+                      <span className="ml-auto bg-pink-500 text-white text-xs font-bold rounded-full h-6 min-w-6 px-1.5 flex items-center justify-center">
+                        {getWishlistCount()}
+                      </span>
+                    )}
+                  </Link>
+                  <Link
+                    to="/cart"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 py-3.5 px-4 text-foreground hover:bg-accent/10 hover:text-accent rounded-xl transition-all duration-200"
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                    <span className="font-medium">Shopping Cart</span>
+                    {getCartCount() > 0 && (
+                      <span className="ml-auto bg-accent text-accent-foreground text-xs font-bold rounded-full h-6 min-w-6 px-1.5 flex items-center justify-center">
+                        {getCartCount()}
+                      </span>
+                    )}
                   </Link>
                 </li>
-              ))}
-              
-              {/* Categories with expandable submenu */}
-              <li className="border-t border-border pt-4 mt-4">
-                <p className="px-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2">Categories</p>
-                {megaMenuData.map((category) => (
-                  <div key={category.name}>
-                    <button
-                      onClick={() => setExpandedMobileCategory(
-                        expandedMobileCategory === category.name ? null : category.name
-                      )}
-                      className="w-full flex items-center justify-between py-3 px-4 text-foreground hover:bg-secondary rounded-lg transition-colors"
-                    >
-                      <span className="font-medium">{category.name}</span>
-                      <ChevronRight className={`h-5 w-5 transition-transform ${expandedMobileCategory === category.name ? "rotate-90" : ""}`} />
-                    </button>
-                    
-                    {expandedMobileCategory === category.name && (
-                      <div className="ml-4 pl-4 border-l border-border">
-                        {category.subItems.map((subItem) => (
-                          <Link
-                            key={subItem.name}
-                            to={`/category/${category.slug}/${subItem.slug}`}
-                            onClick={() => setIsMenuOpen(false)}
-                            className="block py-2 px-4 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
-                          >
-                            {subItem.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </li>
 
-              {/* Quick links */}
-              <li className="border-t border-border pt-4 mt-4">
-                <Link
-                  to="/wishlist"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 py-3 px-4 text-foreground hover:bg-secondary rounded-lg transition-colors"
-                >
-                  <Heart className="h-5 w-5" />
-                  <span className="font-medium">Wishlist</span>
-                  {getWishlistCount() > 0 && (
-                    <span className="ml-auto bg-pink-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                      {getWishlistCount()}
-                    </span>
-                  )}
-                </Link>
-                <Link
-                  to="/cart"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 py-3 px-4 text-foreground hover:bg-secondary rounded-lg transition-colors"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  <span className="font-medium">Cart</span>
-                  {getCartCount() > 0 && (
-                    <span className="ml-auto bg-accent text-accent-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                      {getCartCount()}
-                    </span>
-                  )}
-                </Link>
-              </li>
-
-              <li className="pt-4 border-t border-border">
-                <button
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    handleAuthClick();
-                  }}
-                  className="w-full btn-primary text-center"
-                >
-                  {isAuthenticated ? "My Account" : "Login / Sign Up"}
-                </button>
-              </li>
-            </ul>
-          </nav>
-        </div>
+                <li className="pt-6 border-t border-border mt-5">
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleAuthClick();
+                    }}
+                    className="w-full btn-primary text-center py-3.5 text-base font-semibold rounded-xl shadow-lg shadow-primary/25"
+                  >
+                    {isAuthenticated ? "My Account" : "Login / Sign Up"}
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </>
       )}
     </header>
   );
