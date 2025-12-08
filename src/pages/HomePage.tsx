@@ -41,42 +41,68 @@ const HomePage = () => {
       />
       
       <main className="min-h-screen">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden">
-          {/* Background Image */}
+        {/* Hero Section - z-index lower than mobile menu */}
+        <section className="relative overflow-hidden z-0">
+          {/* Background Image with parallax effect */}
           <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 transition-transform duration-1000"
             style={{ backgroundImage: "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1920')" }}
           />
           <div className="absolute inset-0 gradient-hero opacity-95" />
+          
+          {/* Animated floating elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-20 right-10 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse-soft" />
+            <div className="absolute bottom-40 left-20 w-48 h-48 bg-accent/10 rounded-full blur-2xl animate-float" />
+            <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-cyan-400/10 rounded-full blur-xl animate-pulse-soft animation-delay-300" />
+          </div>
           
           <div className="absolute inset-0 opacity-10">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.4%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" />
           </div>
           
-          <div className="container-cbr py-20 md:py-28 lg:py-36 relative">
-            <div className="max-w-2xl animate-fade-in-up">
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white">
-                Clinical Based Remedies for Your Better Health
+          <div className="container-cbr py-20 md:py-28 lg:py-36 relative z-10">
+            <div className="max-w-2xl">
+              <span className="inline-block px-4 py-2 rounded-full bg-white/10 text-white text-sm font-medium mb-6 animate-fade-in-up backdrop-blur-sm border border-white/20">
+                ✨ Trusted by 1M+ Customers Across India
+              </span>
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white animate-fade-in-up animation-delay-100">
+                Clinical Based Remedies for Your <span className="text-cyan-300">Better Health</span>
               </h1>
-              <p className="mt-6 text-lg md:text-xl text-white/90 leading-relaxed">
+              <p className="mt-6 text-lg md:text-xl text-white/90 leading-relaxed animate-fade-in-up animation-delay-200">
                 Your Trusted Partner in Quality Healthcare. Get genuine medicines, health supplements, 
                 and wellness products delivered to your doorstep.
               </p>
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link to="/products" className="btn-accent inline-flex items-center gap-2">
+              <div className="mt-8 flex flex-wrap gap-4 animate-fade-in-up animation-delay-300">
+                <Link to="/products" className="btn-accent inline-flex items-center gap-2 group shadow-lg shadow-accent/30">
                   Shop Medicines
-                  <ArrowRight className="h-5 w-5" />
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
-                <Link to="/about" className="bg-white/10 border border-white/30 text-white px-6 py-3 rounded-xl font-medium hover:bg-white/20 transition-colors">
+                <Link to="/about" className="bg-white/10 border border-white/30 text-white px-6 py-3 rounded-xl font-medium hover:bg-white/20 transition-all hover:shadow-lg backdrop-blur-sm">
                   Know More About CBR
                 </Link>
+              </div>
+              
+              {/* Trust badges */}
+              <div className="mt-12 flex flex-wrap items-center gap-6 animate-fade-in-up animation-delay-400">
+                <div className="flex items-center gap-2 text-white/80">
+                  <Shield className="h-5 w-5" />
+                  <span className="text-sm">100% Genuine</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/80">
+                  <Truck className="h-5 w-5" />
+                  <span className="text-sm">Fast Delivery</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/80">
+                  <Award className="h-5 w-5" />
+                  <span className="text-sm">Certified Products</span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Wave decoration */}
-          <div className="absolute bottom-0 left-0 right-0">
+          <div className="absolute bottom-0 left-0 right-0 z-10">
             <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
               <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(var(--background))"/>
             </svg>
