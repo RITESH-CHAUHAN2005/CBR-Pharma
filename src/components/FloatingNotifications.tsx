@@ -8,18 +8,18 @@ const FloatingNotifications = () => {
   if (notifications.length === 0) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 space-y-3 max-w-sm">
+    <div className="fixed bottom-20 right-3 left-3 sm:left-auto sm:right-6 sm:bottom-6 z-[999] space-y-3 sm:max-w-sm">
       {notifications.map((notification) => (
         <div
           key={notification.id}
-          className="bg-card rounded-2xl shadow-cbr-lg border border-border p-4 animate-slide-in-right"
+          className="bg-card rounded-xl sm:rounded-2xl shadow-xl border border-border p-3 sm:p-4 animate-slide-in-right"
         >
           <div className="flex items-start gap-3">
             {/* Product Image */}
             <img
               src={notification.product.image}
               alt={notification.product.name}
-              className="w-16 h-16 rounded-xl object-cover"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg sm:rounded-xl object-cover flex-shrink-0"
             />
 
             {/* Content */}
@@ -44,7 +44,7 @@ const FloatingNotifications = () => {
 
               <Link
                 to={notification.type === "cart" ? "/cart" : "/wishlist"}
-                className="inline-flex items-center gap-1 mt-2 text-xs text-primary hover:underline"
+                className="inline-flex items-center gap-1 mt-2 text-xs text-primary hover:underline font-medium"
               >
                 {notification.type === "cart" ? (
                   <>
@@ -63,7 +63,8 @@ const FloatingNotifications = () => {
             {/* Close button */}
             <button
               onClick={() => removeNotification(notification.id)}
-              className="p-1 hover:bg-secondary rounded-lg transition-colors"
+              className="p-1.5 hover:bg-secondary rounded-lg transition-colors flex-shrink-0"
+              aria-label="Dismiss notification"
             >
               <X className="h-4 w-4 text-muted-foreground" />
             </button>
