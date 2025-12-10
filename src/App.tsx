@@ -55,6 +55,8 @@ const App = () => (
                   <div className="flex flex-col min-h-screen">
                     <Header />
                     <AuthModal />
+                    {/* Spacer for fixed header on mobile */}
+                    <div className="h-[120px] md:h-0 flex-shrink-0" />
                     <div className="flex-1">
                       <Routes>
                         <Route path="/" element={<HomePage />} />

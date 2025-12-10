@@ -99,15 +99,15 @@ const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-cbr-sm">
+    <header className="fixed top-0 left-0 right-0 z-[1000] bg-card border-b border-border shadow-lg md:sticky md:z-50 md:bg-card/95 md:backdrop-blur-md md:shadow-cbr-sm">
       {/* Main header */}
-      <div className="container-cbr py-4">
-        <div className="flex items-center justify-between gap-4">
+      <div className="container-cbr py-3 md:py-4">
+        <div className="flex items-center justify-between gap-3 md:gap-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 shrink-0">
-            <img src={logo} alt="CBR Pharma" className="h-12 w-12 object-contain" />
+          <Link to="/" className="flex items-center gap-2 md:gap-3 shrink-0">
+            <img src={logo} alt="CBR Pharma" className="h-10 w-10 md:h-12 md:w-12 object-contain" />
             <div className="hidden sm:block">
-              <h1 className="font-display font-bold text-xl text-primary leading-tight">CBR Pharma</h1>
+              <h1 className="font-display font-bold text-lg md:text-xl text-primary leading-tight">CBR Pharma</h1>
               <p className="text-xs text-muted-foreground">Clinical Based Remedies</p>
             </div>
           </Link>
@@ -179,14 +179,14 @@ const Header = () => {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
             <Link
               to="/wishlist"
-              className="relative p-2.5 rounded-xl hover:bg-secondary transition-colors"
+              className="relative p-3 md:p-2.5 rounded-xl hover:bg-secondary transition-colors"
             >
-              <Heart className="h-6 w-6 text-foreground" />
+              <Heart className="h-5 w-5 md:h-6 md:w-6 text-foreground" />
               {getWishlistCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-scale-in">
+                <span className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 bg-pink-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-scale-in">
                   {getWishlistCount()}
                 </span>
               )}
@@ -194,11 +194,11 @@ const Header = () => {
 
             <Link
               to="/cart"
-              className="relative p-2.5 rounded-xl hover:bg-secondary transition-colors"
+              className="relative p-3 md:p-2.5 rounded-xl hover:bg-secondary transition-colors"
             >
-              <ShoppingCart className="h-6 w-6 text-foreground" />
+              <ShoppingCart className="h-5 w-5 md:h-6 md:w-6 text-foreground" />
               {getCartCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-scale-in">
+                <span className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 bg-accent text-accent-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-scale-in">
                   {getCartCount()}
                 </span>
               )}
@@ -206,32 +206,33 @@ const Header = () => {
 
             <button
               onClick={handleAuthClick}
-              className="p-2.5 rounded-xl hover:bg-secondary transition-colors"
+              className="p-3 md:p-2.5 rounded-xl hover:bg-secondary transition-colors"
             >
-              <User className="h-6 w-6 text-foreground" />
+              <User className="h-5 w-5 md:h-6 md:w-6 text-foreground" />
             </button>
 
-            {/* Mobile menu toggle */}
+            {/* Mobile menu toggle - hamburger button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2.5 rounded-xl hover:bg-secondary transition-colors md:hidden"
+              className="p-3 rounded-xl bg-primary/10 hover:bg-primary/20 transition-colors md:hidden"
+              aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? <X className="h-6 w-6 text-primary" /> : <Menu className="h-6 w-6 text-primary" />}
             </button>
           </div>
         </div>
 
         {/* Mobile search */}
-        <form onSubmit={handleSearch} className="mt-4 md:hidden">
+        <form onSubmit={handleSearch} className="mt-3 md:hidden">
           <div className="relative">
             <input
               type="text"
               placeholder="Search medicines..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="input-cbr pl-10"
+              className="input-cbr pl-11 py-3 text-base"
             />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           </div>
         </form>
       </div>
@@ -278,41 +279,27 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Mobile menu - Full overlay with highest z-index */}
+      {/* Mobile menu - Full-width overlay from top */}
       {isMenuOpen && (
         <>
-          {/* Backdrop */}
+          {/* Full screen backdrop */}
           <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] md:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1001] md:hidden"
             onClick={() => setIsMenuOpen(false)}
           />
           
-          {/* Menu Panel */}
+          {/* Full-width dropdown menu overlay - appears below navbar */}
           <div 
-            className="fixed inset-y-0 right-0 w-full max-w-sm bg-card z-[9999] md:hidden overflow-y-auto shadow-2xl animate-slide-in-right"
+            className="fixed top-[120px] left-0 right-0 bottom-0 bg-card z-[1002] md:hidden overflow-y-auto shadow-2xl animate-fade-in"
           >
-            {/* Header with close button */}
-            <div className="sticky top-0 bg-card/95 backdrop-blur-md flex items-center justify-between px-5 py-4 border-b border-border">
-              <Link to="/" className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
-                <img src={logo} alt="CBR Pharma" className="h-10 w-10 object-contain" />
-                <span className="font-display font-bold text-lg text-primary">CBR Pharma</span>
-              </Link>
-              <button
-                onClick={() => setIsMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            
-            <nav className="px-4 py-6">
-              <ul className="space-y-1">
+            <nav className="px-5 py-6 pb-24">
+              <ul className="space-y-2">
                 {navLinks.filter(link => !link.hasMegaMenu).map((link, index) => (
                   <li key={link.name} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
                     <Link
                       to={link.path}
                       onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center gap-3 py-3.5 px-4 text-base font-medium text-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-all duration-200"
+                      className="flex items-center gap-4 py-4 px-4 text-base font-medium text-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-all duration-200 min-h-[56px]"
                     >
                       {link.name}
                     </Link>
@@ -321,7 +308,7 @@ const Header = () => {
                 
                 {/* Categories with expandable submenu */}
                 <li className="border-t border-border pt-5 mt-5">
-                  <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Shop by Category</p>
+                  <p className="px-4 text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-3">Shop by Category</p>
                   <div className="space-y-1">
                     {megaMenuData.map((category, catIndex) => (
                       <div key={category.name} className="animate-fade-in" style={{ animationDelay: `${(catIndex + 5) * 50}ms` }}>
@@ -329,21 +316,21 @@ const Header = () => {
                           onClick={() => setExpandedMobileCategory(
                             expandedMobileCategory === category.name ? null : category.name
                           )}
-                          className="w-full flex items-center justify-between py-3.5 px-4 text-foreground hover:bg-primary/10 rounded-xl transition-all duration-200"
+                          className="w-full flex items-center justify-between py-4 px-4 text-foreground hover:bg-primary/10 rounded-xl transition-all duration-200 min-h-[56px]"
                         >
-                          <span className="font-medium">{category.name}</span>
-                          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${expandedMobileCategory === category.name ? "rotate-180" : ""}`} />
+                          <span className="font-medium text-base">{category.name}</span>
+                          <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${expandedMobileCategory === category.name ? "rotate-180" : ""}`} />
                         </button>
                         
                         {/* Submenu with smooth animation */}
-                        <div className={`overflow-hidden transition-all duration-300 ease-out ${expandedMobileCategory === category.name ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
-                          <div className="ml-3 mt-1 pl-4 border-l-2 border-primary/20 space-y-0.5">
+                        <div className={`overflow-hidden transition-all duration-300 ease-out ${expandedMobileCategory === category.name ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                          <div className="ml-4 mt-2 pl-4 border-l-2 border-primary/30 space-y-1">
                             {category.subItems.map((subItem, subIndex) => (
                               <Link
                                 key={subItem.name}
                                 to={`/category/${category.slug}/${subItem.slug}`}
                                 onClick={() => setIsMenuOpen(false)}
-                                className="block py-2.5 px-4 text-sm text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200 animate-fade-in"
+                                className="block py-3.5 px-4 text-base text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all duration-200 animate-fade-in min-h-[48px] flex items-center"
                                 style={{ animationDelay: `${subIndex * 30}ms` }}
                               >
                                 {subItem.name}
@@ -358,16 +345,16 @@ const Header = () => {
 
                 {/* Quick links */}
                 <li className="border-t border-border pt-5 mt-5">
-                  <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Quick Links</p>
+                  <p className="px-4 text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-3">Quick Links</p>
                   <Link
                     to="/wishlist"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 py-3.5 px-4 text-foreground hover:bg-pink-50 hover:text-pink-600 rounded-xl transition-all duration-200"
+                    className="flex items-center gap-4 py-4 px-4 text-foreground hover:bg-secondary rounded-xl transition-all duration-200 min-h-[56px]"
                   >
-                    <Heart className="h-5 w-5" />
-                    <span className="font-medium">My Wishlist</span>
+                    <Heart className="h-6 w-6 text-pink-500" />
+                    <span className="font-medium text-base">My Wishlist</span>
                     {getWishlistCount() > 0 && (
-                      <span className="ml-auto bg-pink-500 text-white text-xs font-bold rounded-full h-6 min-w-6 px-1.5 flex items-center justify-center">
+                      <span className="ml-auto bg-pink-500 text-white text-xs font-bold rounded-full h-6 min-w-6 px-2 flex items-center justify-center">
                         {getWishlistCount()}
                       </span>
                     )}
@@ -375,12 +362,12 @@ const Header = () => {
                   <Link
                     to="/cart"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 py-3.5 px-4 text-foreground hover:bg-accent/10 hover:text-accent rounded-xl transition-all duration-200"
+                    className="flex items-center gap-4 py-4 px-4 text-foreground hover:bg-secondary rounded-xl transition-all duration-200 min-h-[56px]"
                   >
-                    <ShoppingCart className="h-5 w-5" />
-                    <span className="font-medium">Shopping Cart</span>
+                    <ShoppingCart className="h-6 w-6 text-accent" />
+                    <span className="font-medium text-base">Shopping Cart</span>
                     {getCartCount() > 0 && (
-                      <span className="ml-auto bg-accent text-accent-foreground text-xs font-bold rounded-full h-6 min-w-6 px-1.5 flex items-center justify-center">
+                      <span className="ml-auto bg-accent text-accent-foreground text-xs font-bold rounded-full h-6 min-w-6 px-2 flex items-center justify-center">
                         {getCartCount()}
                       </span>
                     )}
@@ -393,7 +380,7 @@ const Header = () => {
                       setIsMenuOpen(false);
                       handleAuthClick();
                     }}
-                    className="w-full btn-primary text-center py-3.5 text-base font-semibold rounded-xl shadow-lg shadow-primary/25"
+                    className="w-full btn-primary text-center py-4 text-base font-semibold rounded-xl shadow-lg shadow-primary/25 min-h-[56px]"
                   >
                     {isAuthenticated ? "My Account" : "Login / Sign Up"}
                   </button>
