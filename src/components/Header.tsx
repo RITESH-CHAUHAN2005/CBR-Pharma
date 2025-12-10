@@ -279,18 +279,19 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Mobile menu - Full-width overlay from top */}
+      {/* Mobile menu - Top dropdown */}
       {isMenuOpen && (
         <>
           {/* Full screen backdrop */}
           <div 
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1001] md:hidden"
+            className="fixed inset-0 bg-black/50 z-[1001] md:hidden animate-fade-in"
             onClick={() => setIsMenuOpen(false)}
           />
           
-          {/* Full-width dropdown menu overlay - appears below navbar */}
+          {/* Top dropdown menu - slides down from navbar */}
           <div 
-            className="fixed top-[120px] left-0 right-0 bottom-0 bg-card z-[1002] md:hidden overflow-y-auto shadow-2xl animate-fade-in"
+            className="fixed top-[120px] left-0 right-0 max-h-[calc(100vh-120px)] bg-background z-[1002] md:hidden overflow-y-auto shadow-2xl border-b border-border animate-slide-down"
+            style={{ transformOrigin: 'top' }}
           >
             <nav className="px-5 py-6 pb-24">
               <ul className="space-y-2">
